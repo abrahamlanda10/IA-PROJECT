@@ -29,6 +29,9 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
   });
 
+  // The homepage is a self-contained portfolio page with its own Hud header.
+  if (pathUrl === "/") return null;
+
   return (
     <>
       <header

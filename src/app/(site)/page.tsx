@@ -1,36 +1,37 @@
-import CallToAction from "@/components/CallToAction";
+import About from "@/components/Portfolio/About";
+import Badges from "@/components/Portfolio/Badges";
 import Contact from "@/components/Contact";
-import Clients from "@/components/Home/Clients";
-import Features from "@/components/Home/Features";
-import FeaturesList from "@/components/Home/FeaturesList";
-import Hero from "@/components/Home/Hero";
-import Reviews from "@/components/Home/Reviews";
-import Newsletter from "@/components/Newsletter";
-import Pricing from "@/components/Pricing";
-import Support from "@/components/Support";
+import CursorFX from "@/components/Portfolio/CursorFX";
+import Education from "@/components/Portfolio/Education";
+import Experience from "@/components/Portfolio/Experience";
+import Hero from "@/components/Portfolio/Hero";
+import Hud from "@/components/Portfolio/Hud";
+import { PaletteProvider } from "@/components/Portfolio/PaletteContext";
+import PortfolioFooter from "@/components/Portfolio/PortfolioFooter";
+import Projects from "@/components/Portfolio/Projects";
+import Skills from "@/components/Portfolio/Skills";
+import "@/styles/portfolio.css";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Tool - Next.js Template for AI Tools",
-  description: "This is Home for AI Tool",
-  // other metadata
+  title: "Abraham Landa — Software Developer",
+  description: "Portfolio of Abraham Landa, a software developer transitioning from military vehicle maintenance to full-stack development.",
 };
 
 export default function Home() {
   return (
-    <>
+    <PaletteProvider>
+      <Hud />
+      <CursorFX />
       <Hero />
-      <Features />
-      <FeaturesList />
-      <Pricing />
-      <section className="relative z-20 overflow-hidden pb-20 pt-22.5 lg:pt-27.5 xl:pt-32.5 2xl:pt-45">
-        <Reviews />
-      </section>
-      <Clients />
-      <Support />
-      <CallToAction />
-      <Newsletter />
+      <About />
+      <Skills />
+      <Experience />
+      <Education />
+      <Badges />
+      <Projects />
       <Contact />
-    </>
+      <PortfolioFooter />
+    </PaletteProvider>
   );
 }

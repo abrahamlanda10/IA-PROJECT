@@ -42,73 +42,58 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="pb-17.5 lg:pb-22.5 xl:pb-27.5">
-      <div className="mx-auto max-w-[600px] px-4 sm:px-8 xl:px-0">
-        <div className="mb-8 text-center">
-          <h2 className="mb-3 text-3xl font-bold text-white">
-            Let&apos;s Connect
-          </h2>
-          <p>Have an opportunity or a question? Send a message below.</p>
+    <section id="pf-contact" className="pf-section pf-container">
+      <div className="pf-section-head">
+        <h2 className="pf-section-title">Let&apos;s Connect</h2>
+        <span className="pf-tag">07 // Comms</span>
+      </div>
+
+      <form onSubmit={handleSubmit} className="pf-contact-box">
+        <p className="pf-form-note" style={{ marginBottom: "1rem" }}>
+          Just your name, email, and what&apos;s on your mind.
+        </p>
+
+        <div className="pf-field">
+          <label htmlFor="name">Name</label>
+          <input
+            onChange={handleChange}
+            value={data.name}
+            name="name"
+            id="name"
+            type="text"
+            required
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="gradient-box rounded-lg bg-dark-8 p-8">
-          <div className="mb-5 flex flex-col">
-            <label htmlFor="name" className="pb-2">
-              Name
-            </label>
-            <input
-              onChange={handleChange}
-              value={data.name}
-              name="name"
-              id="name"
-              type="text"
-              className="rounded-lg border border-white/[0.12] bg-dark-7 px-5 py-3 text-white outline-hidden focus:border-purple"
-              placeholder="Your name"
-              required
-            />
-          </div>
+        <div className="pf-field">
+          <label htmlFor="email">Email</label>
+          <input
+            onChange={handleChange}
+            value={data.email}
+            name="email"
+            id="email"
+            type="email"
+            required
+          />
+        </div>
 
-          <div className="mb-5 flex flex-col">
-            <label htmlFor="email" className="pb-2">
-              Email
-            </label>
-            <input
-              onChange={handleChange}
-              value={data.email}
-              name="email"
-              id="email"
-              type="email"
-              className="rounded-lg border border-white/[0.12] bg-dark-7 px-5 py-3 text-white outline-hidden focus:border-purple"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+        <div className="pf-field">
+          <label htmlFor="message">Message</label>
+          <textarea
+            onChange={handleChange}
+            value={data.message}
+            name="message"
+            id="message"
+            rows={5}
+            required
+          />
+        </div>
 
-          <div className="mb-5 flex flex-col">
-            <label htmlFor="message" className="pb-2">
-              Message
-            </label>
-            <textarea
-              onChange={handleChange}
-              value={data.message}
-              name="message"
-              id="message"
-              rows={5}
-              className="resize-none rounded-lg border border-white/[0.12] bg-dark-7 px-5 py-3 text-white outline-hidden focus:border-purple"
-              placeholder="What's on your mind?"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="hero-button-gradient w-full rounded-lg px-7 py-3 text-center font-medium text-white duration-300 ease-in hover:opacity-80 disabled:opacity-50"
-          >
-            {loading ? "Sending..." : "Send Message"}
-          </button>
-        </form>
-      </div>
+        <button type="submit" disabled={loading} className="pf-btn pf-btn-solid" style={{ width: "100%", justifyContent: "center" }}>
+          {loading ? "Sending..." : "Send Message"}
+        </button>
+        <p className="pf-form-note">Message goes straight to my inbox via a secure server-side integration — no key ever touches the browser.</p>
+      </form>
     </section>
   );
 };

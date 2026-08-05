@@ -1,10 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import logo from "../../../public/images/logo/logo.svg";
 import FooterLinkList from "./FooterLinkList";
 import { companiesLink, productsLink, supportsLink } from "./linksData";
 
 const Footer = () => {
+  const pathUrl = usePathname();
+
+  // The homepage is a self-contained portfolio page with its own footer.
+  if (pathUrl === "/") return null;
+
   return (
     <>
       <footer className="relative z-10 pb-17.5 lg:pb-22.5 xl:pb-27.5">
