@@ -1,0 +1,332 @@
+/* ============================================================
+   Portfolio design system — "field dossier meets arcade cabinet"
+   Everything here is scoped under #pf-root so it never touches
+   the rest of the site (Docs, Pricing, AI Examples, Auth, etc).
+   ============================================================ */
+
+:root {
+  --pf-font-mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --pf-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@property --pf-hue-deg { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+
+@keyframes pf-reveal-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pf-hero-zoom-out {
+  from { transform: scale(1.15); }
+  to { transform: scale(1); }
+}
+@keyframes pf-scanline-drift {
+  from { background-position: 0 0; }
+  to { background-position: 0 120px; }
+}
+
+/* ---- Palette engine: five token sets, one shared structure ---- */
+#pf-root {
+  --bg: #14170f; --bg-alt: #1c2016; --ink: #eee8d5; --ink-dim: #a8a691;
+  --accent: #ffb000; --accent-2: #6b8e23; --line: #3a3f2c; --accent-ink: #14170f;
+  --pf-hue-deg: 0deg; --pf-mx: 0; --pf-my: 0;
+}
+#pf-root[data-palette="night"] {
+  --bg: #060a10; --bg-alt: #0d1620; --ink: #dbe8ee; --ink-dim: #7c95a0;
+  --accent: #35e6d0; --accent-2: #2f6fed; --line: #17303a; --accent-ink: #060a10;
+}
+#pf-root[data-palette="motorpool"] {
+  --bg: #211f1d; --bg-alt: #2b2825; --ink: #f1ece4; --ink-dim: #a79c8f;
+  --accent: #ff6a1a; --accent-2: #c7c2b8; --line: #46403a; --accent-ink: #1a1512;
+}
+#pf-root[data-palette="arcade"] {
+  --bg: #0c0616; --bg-alt: #160d24; --ink: #ece6f7; --ink-dim: #9385ad;
+  --accent: #ff2ec4; --accent-2: #4fd1ff; --line: #2c1c40; --accent-ink: #0c0616;
+}
+#pf-root[data-palette="paper"] {
+  --bg: #f3ede0; --bg-alt: #e9e0cd; --ink: #262019; --ink-dim: #5c5445;
+  --accent: #2f5233; --accent-2: #a13d2b; --line: #cdc2a6; --accent-ink: #f3ede0;
+}
+
+#pf-root {
+  background: radial-gradient(ellipse 90% 50% at 50% -8%, color-mix(in srgb, var(--accent) 12%, var(--bg)), var(--bg) 60%);
+  color: var(--ink);
+  font-family: var(--pf-font-body);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+#pf-root * { box-sizing: border-box; }
+#pf-root h1, #pf-root h2, #pf-root h3 { font-family: var(--pf-font-mono); text-wrap: balance; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+#pf-root p { margin: 0; color: var(--ink-dim); max-width: 62ch; }
+#pf-root a { color: inherit; text-decoration: none; }
+#pf-root ::selection { background: var(--accent); color: var(--accent-ink); }
+#pf-root button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+#pf-root img, #pf-root video { display: block; max-width: 100%; }
+
+.pf-eyebrow {
+  font-family: var(--pf-font-mono); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); display: inline-flex; align-items: center; gap: .5em;
+}
+.pf-eyebrow::before { content: ""; width: 1.4em; height: 2px; background: var(--accent); display: inline-block; }
+
+.pf-pixel-corners, .pf-card, .pf-proj-card, .pf-contact-box {
+  clip-path: polygon(0 10px, 10px 10px, 10px 0, calc(100% - 10px) 0, calc(100% - 10px) 10px, 100% 10px,
+    100% calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%,
+    10px calc(100% - 10px), 0 calc(100% - 10px));
+}
+.pf-chip, .pf-btn, .pf-nav-btn, .pf-stat, .pf-field input, .pf-field textarea {
+  clip-path: polygon(0 5px, 5px 5px, 5px 0, calc(100% - 5px) 0, calc(100% - 5px) 5px, 100% 5px,
+    100% calc(100% - 5px), calc(100% - 5px) calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%,
+    5px calc(100% - 5px), 0 calc(100% - 5px));
+}
+/* 3D pixel bevel: inset highlight/shadow + a two-tone "long shadow" + a soft ambient glow */
+.pf-card, .pf-proj-card, .pf-contact-box {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--bg-alt) 100%, white 6%), var(--bg-alt) 65%);
+  box-shadow: inset 2px 2px 0 0 color-mix(in srgb, var(--accent-2) 55%, white 25%), inset -3px -3px 0 0 color-mix(in srgb, var(--line) 70%, black 30%);
+  filter: drop-shadow(4px 4px 0 var(--accent-2)) drop-shadow(8px 8px 0 var(--line)) drop-shadow(0 16px 30px color-mix(in srgb, var(--accent) 35%, transparent));
+  transition: transform .2s cubic-bezier(.2,.8,.2,1), filter .2s ease, box-shadow .2s ease;
+}
+.pf-card:hover, .pf-proj-card:hover, .pf-contact-box:hover {
+  transform: translate(-3px, -3px);
+  filter: drop-shadow(4px 4px 0 var(--accent)) drop-shadow(10px 10px 0 var(--accent-2)) drop-shadow(0 22px 40px color-mix(in srgb, var(--accent) 55%, transparent));
+}
+.pf-chip, .pf-nav-btn, .pf-stat {
+  box-shadow: inset 1px 1px 0 0 color-mix(in srgb, var(--accent-2) 50%, white 20%), inset -2px -2px 0 0 color-mix(in srgb, var(--line) 65%, black 25%);
+  filter: drop-shadow(2px 2px 0 var(--accent-2)) drop-shadow(4px 4px 0 var(--line)) drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 25%, transparent));
+  transition: transform .15s ease, filter .15s ease;
+}
+.pf-chip:hover, .pf-nav-btn:hover { transform: translate(-1px, -1px); filter: drop-shadow(2px 2px 0 var(--accent)) drop-shadow(5px 5px 0 var(--accent-2)) drop-shadow(0 10px 20px color-mix(in srgb, var(--accent) 40%, transparent)); }
+
+.pf-container { max-width: 1120px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+.pf-section { position: relative; padding-block: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--line); overflow: hidden; }
+.pf-section-head { position: relative; z-index: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: clamp(1.5rem, 4vw, 2.5rem); flex-wrap: wrap; }
+.pf-section-title { font-size: clamp(1.5rem, 3vw, 2rem); }
+.pf-tag { font-family: var(--pf-font-mono); font-size: .8rem; color: var(--ink-dim); }
+.pf-section > * { position: relative; z-index: 1; }
+
+/* Arcade section backdrops: each section reads like a different level of the same game */
+.pf-section::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(color-mix(in srgb, var(--accent-2) 45%, transparent) 1.4px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 35%, transparent 78%);
+          mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 35%, transparent 78%);
+  opacity: .55;
+}
+.pf-section::after {
+  content: ""; position: absolute; left: -20%; right: -20%; bottom: 0; height: 60%; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--accent-2) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 60%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: perspective(280px) rotateX(64deg) translate(calc(var(--pf-mx, 0) * 12px), calc(var(--pf-my, 0) * 6px));
+  transform-origin: bottom;
+  -webkit-mask-image: linear-gradient(to top, black, transparent 92%);
+          mask-image: linear-gradient(to top, black, transparent 92%);
+  opacity: .32; transition: transform .5s ease-out;
+}
+#pf-about::before {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--accent) 60%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in srgb, var(--accent-2) 45%, transparent) 1.3px, transparent 1.3px);
+  background-size: 54px 54px, 128px 128px;
+  background-position: 0 0, 30px 44px;
+}
+#pf-about::after { opacity: 0; }
+#pf-skills::before {
+  background-image:
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 40%, transparent) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent-2) 32%, transparent) 0 1px, transparent 1px 24px);
+  opacity: .4;
+}
+#pf-skills::after { opacity: .14; }
+#pf-education::before {
+  background-image: repeating-conic-gradient(color-mix(in srgb, var(--accent) 22%, transparent) 0% 25%, transparent 0% 50%);
+  background-size: 42px 42px;
+}
+#pf-education::after { opacity: .16; }
+#pf-badges::before {
+  background-image:
+    linear-gradient(45deg, color-mix(in srgb, var(--accent) 45%, transparent) 25%, transparent 25%, transparent 75%, color-mix(in srgb, var(--accent) 45%, transparent) 75%),
+    linear-gradient(45deg, color-mix(in srgb, var(--accent-2) 40%, transparent) 25%, transparent 25%, transparent 75%, color-mix(in srgb, var(--accent-2) 40%, transparent) 75%);
+  background-size: 34px 34px; background-position: 0 0, 17px 17px;
+}
+#pf-badges::after { opacity: 0; }
+#pf-projects::before {
+  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 45%, transparent) 0 2px, transparent 2px 28px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+          mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+  opacity: .28;
+}
+#pf-projects::after { opacity: .16; }
+#pf-contact::before {
+  background-image: repeating-radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--accent) 40%, transparent) 0 1px, transparent 1px 36px);
+}
+#pf-contact::after { opacity: 0; }
+
+/* ---- Cursor glow: a soft accent halo that lightens the grid it passes over ---- */
+.pf-cursor-glow {
+  position: fixed; top: 0; left: 0; width: 280px; height: 280px; margin: -140px 0 0 -140px;
+  border-radius: 50%; pointer-events: none; z-index: 6; mix-blend-mode: screen; opacity: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 68%);
+  filter: blur(4px); transition: transform .07s linear, opacity .3s ease;
+}
+.pf-pixel-dot {
+  position: fixed; width: 5px; height: 5px; background: var(--accent); pointer-events: none; z-index: 999;
+  box-shadow: 0 0 6px 1px var(--accent), 0 0 14px 3px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: transform .6s ease-out, opacity .6s ease-out; opacity: .9;
+}
+
+/* ---- HUD header ---- */
+.pf-hud {
+  position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: .9rem clamp(1.25rem, 4vw, 2.5rem); background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid var(--line);
+  box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.pf-brand { display: flex; align-items: center; gap: .6rem; font-family: var(--pf-font-mono); font-size: .85rem; letter-spacing: .04em; }
+.pf-brand img { width: 30px; height: 30px; image-rendering: pixelated; border-radius: 3px; }
+.pf-brand strong { color: var(--ink); }
+.pf-brand span { color: var(--ink-dim); }
+.pf-palette-picker { display: flex; gap: .4rem; align-items: center; }
+.pf-swatch {
+  width: 26px; height: 26px; border: 2px solid var(--line); background: var(--sw-bg);
+  display: grid; place-items: center; position: relative;
+  clip-path: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
+  filter: drop-shadow(2px 2px 0 var(--line)); transition: transform .12s ease, filter .12s ease;
+}
+.pf-swatch::after { content: ""; width: 10px; height: 10px; background: var(--sw-accent); }
+.pf-swatch:hover { transform: translate(-1px, -1px); }
+.pf-swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent); }
+.pf-contact-quick { font-family: var(--pf-font-mono); font-size: .8rem; border: 1px solid var(--line); padding: .5rem .9rem; background: transparent; }
+.pf-contact-quick:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---- Hero ---- */
+#pf-hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; border-top: none; }
+.pf-hero-media { position: absolute; inset: 0; z-index: 0; }
+.pf-hero-media video {
+  width: 100%; height: 100%; object-fit: cover; will-change: transform;
+  animation: pf-hero-zoom-out 1.8s cubic-bezier(.16,1,.3,1) both;
+  filter: saturate(1.35) contrast(1.14) brightness(.94);
+}
+.pf-hero-scanlines {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply; opacity: .4;
+  animation: pf-scanline-drift 10s linear infinite;
+}
+.pf-ambient-glow {
+  position: absolute; z-index: 1; inset: -20% -10% auto -10%; height: 65%; pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, var(--accent), transparent 65%);
+  opacity: .4; filter: blur(80px) hue-rotate(var(--pf-hue-deg)); transition: filter 2.4s cubic-bezier(.45,0,.2,1);
+}
+.pf-hero-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, var(--bg) 4%, color-mix(in srgb, var(--bg) 45%, transparent) 46%, color-mix(in srgb, var(--bg) 15%, transparent) 100%);
+  box-shadow: inset 0 0 140px 40px color-mix(in srgb, var(--accent) 20%, transparent);
+  filter: hue-rotate(var(--pf-hue-deg)); transition: filter 2.4s cubic-bezier(.45,0,.2,1);
+}
+.pf-hero-content { position: relative; z-index: 2; padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vw, 5rem); width: 100%; }
+.pf-hero-content > * { animation: pf-reveal-up .9s cubic-bezier(.16,1,.3,1) both; }
+.pf-hero-content > *:nth-child(1) { animation-delay: .05s; }
+.pf-hero-content > *:nth-child(2) { animation-delay: .18s; }
+.pf-hero-content > *:nth-child(3) { animation-delay: .3s; }
+.pf-hero-content > *:nth-child(4) { animation-delay: .42s; }
+.pf-hero-content > *:nth-child(5) { animation-delay: .54s; }
+.pf-hero-content h1 {
+  font-size: clamp(2.9rem, 9vw, 5.5rem); color: var(--ink); margin-block: .6rem; letter-spacing: -.02em;
+  text-shadow: 0 0 50px color-mix(in srgb, var(--accent) 50%, transparent), 0 0 110px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.pf-hero-role { font-family: var(--pf-font-mono); font-size: clamp(1rem, 2.2vw, 1.3rem); color: var(--ink-dim); margin-bottom: .75rem; }
+.pf-hero-hook { font-size: 1.05rem; margin-bottom: 1.75rem; }
+.pf-hero-actions { display: flex; gap: .9rem; flex-wrap: wrap; }
+.pf-scroll-cue { position: absolute; bottom: 1.25rem; right: clamp(1.25rem, 4vw, 2.5rem); z-index: 2; font-family: var(--pf-font-mono); font-size: .7rem; color: var(--ink-dim); letter-spacing: .18em; }
+
+/* ---- Buttons ---- */
+.pf-btn {
+  font-family: var(--pf-font-mono); font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; padding: .85rem 1.4rem;
+  display: inline-flex; align-items: center; gap: .5rem; border: 1px solid var(--accent);
+  box-shadow: inset 1px 1px 0 0 color-mix(in srgb, var(--accent-2) 50%, white 20%), inset -2px -2px 0 0 color-mix(in srgb, var(--line) 65%, black 25%);
+  filter: drop-shadow(2px 2px 0 var(--accent-2)) drop-shadow(4px 4px 0 var(--line)) drop-shadow(0 10px 20px color-mix(in srgb, var(--accent) 40%, transparent));
+  transition: transform .15s cubic-bezier(.2,.8,.2,1), background .2s ease, filter .15s ease;
+}
+.pf-btn:hover { transform: translate(-2px, -2px); filter: drop-shadow(2px 2px 0 var(--accent)) drop-shadow(6px 6px 0 var(--accent-2)) drop-shadow(0 16px 28px color-mix(in srgb, var(--accent) 60%, transparent)); }
+.pf-btn:active { transform: translate(2px, 2px); filter: drop-shadow(1px 1px 0 var(--line)); }
+.pf-btn-solid { background: var(--accent); color: var(--accent-ink); }
+.pf-btn-solid:hover { background: var(--accent-2); border-color: var(--accent-2); color: var(--accent-ink); }
+.pf-btn-ghost { color: var(--ink); border-color: var(--line); }
+.pf-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.pf-btn:disabled { opacity: .55; cursor: default; transform: none; }
+.pf-btn:focus-visible, .pf-swatch:focus-visible, #pf-root a:focus-visible, .pf-field input:focus-visible, .pf-field textarea:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* ---- About / stats ---- */
+.pf-about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 5vw, 3.5rem); align-items: start; }
+.pf-stat-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.pf-stat { background: var(--bg); padding: 1.1rem 1.2rem; }
+.pf-stat b { display: block; font-family: var(--pf-font-mono); font-size: 1.5rem; font-variant-numeric: tabular-nums; color: var(--accent); }
+.pf-stat span { font-size: .8rem; color: var(--ink-dim); }
+
+/* ---- Skills ---- */
+.pf-skill-group + .pf-skill-group { margin-top: 1.75rem; }
+.pf-skill-group h3 { font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: .8rem; }
+.pf-chip-row { display: flex; flex-wrap: wrap; gap: .75rem; }
+.pf-chip {
+  font-family: var(--pf-font-mono); font-size: .82rem; padding: .5rem .9rem; border: 1px solid var(--line); background: var(--bg-alt);
+  transform-style: preserve-3d;
+}
+
+/* ---- Timeline ---- */
+.pf-timeline { position: relative; padding-left: 1.75rem; display: flex; flex-direction: column; gap: 2rem; }
+.pf-timeline::before { content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+.pf-t-item { position: relative; }
+.pf-t-item::before { content: ""; position: absolute; left: -1.75rem; top: 4px; width: 11px; height: 11px; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 2px var(--accent); }
+.pf-t-date { font-family: var(--pf-font-mono); font-size: .78rem; color: var(--accent); letter-spacing: .06em; }
+.pf-t-item h3 { font-size: 1.1rem; margin-block: .3rem .4rem; }
+
+/* ---- Education / badges cards ---- */
+.pf-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.5rem; }
+.pf-card { border: 1px solid var(--line); padding: 1.6rem; }
+.pf-card .pf-tag { display: block; margin-bottom: .5rem; }
+.pf-card h3 { font-size: 1rem; margin-bottom: .3rem; }
+.pf-card p { font-size: .88rem; }
+.pf-badge-card { align-items: flex-start; }
+.pf-badge-img { width: 96px; height: 96px; margin-bottom: .9rem; }
+
+/* ---- Projects carousel ---- */
+.pf-carousel-wrap { position: relative; }
+.pf-carousel { display: flex; gap: 1.1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .5rem; scrollbar-width: none; }
+.pf-carousel::-webkit-scrollbar { display: none; }
+.pf-proj-card {
+  scroll-snap-align: start; flex: 0 0 min(340px, 82vw); border: 1px solid var(--line);
+  padding: 1.6rem; display: flex; flex-direction: column; gap: .9rem; transform-style: preserve-3d;
+}
+.pf-proj-card .pf-tag { color: var(--accent); }
+.pf-proj-card h3 { font-size: 1.15rem; }
+.pf-proj-card .pf-stack { font-family: var(--pf-font-mono); font-size: .74rem; color: var(--ink-dim); letter-spacing: .04em; }
+.pf-proj-card a { font-family: var(--pf-font-mono); font-size: .8rem; color: var(--accent); margin-top: auto; }
+.pf-proj-card a:hover { text-decoration: underline; }
+.pf-carousel-nav { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1rem; }
+
+/* ---- Contact ---- */
+.pf-contact-box { max-width: 460px; margin-inline: auto; border: 1px solid var(--line); padding: clamp(1.5rem, 4vw, 2.25rem); }
+.pf-field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+.pf-field label { font-family: var(--pf-font-mono); font-size: .78rem; color: var(--ink-dim); text-transform: uppercase; letter-spacing: .06em; }
+.pf-field input, .pf-field textarea {
+  background: var(--bg-alt); border: 1px solid var(--line); color: var(--ink); padding: .75rem .9rem; font-family: var(--pf-font-body); font-size: .95rem; width: 100%;
+}
+.pf-field textarea { resize: vertical; min-height: 100px; }
+.pf-form-note { font-size: .78rem; color: var(--ink-dim); margin-top: .75rem; }
+
+/* ---- Footer ---- */
+.pf-footer { border-top: 1px solid var(--line); padding: 1.75rem clamp(1.25rem, 4vw, 2.5rem); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--pf-font-mono); font-size: .78rem; color: var(--ink-dim); }
+.pf-footer a:hover { color: var(--accent); }
+
+@media (max-width: 760px) {
+  .pf-about-grid { grid-template-columns: 1fr; }
+  .pf-stat-strip { grid-template-columns: 1fr 1fr; }
+  .pf-hud { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pf-root * { transition: none !important; animation: none !important; }
+}
