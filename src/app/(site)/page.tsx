@@ -1,4 +1,5 @@
 import CallToAction from "@/components/CallToAction";
+import Contact from "@/components/Contact";
 import Clients from "@/components/Home/Clients";
 import Features from "@/components/Home/Features";
 import FeaturesList from "@/components/Home/FeaturesList";
@@ -29,6 +30,7 @@ export default function Home() {
       <Support />
       <CallToAction />
       <Newsletter />
+      <Contact />
     </>
   );
 }
