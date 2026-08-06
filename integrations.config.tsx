@@ -57,7 +57,7 @@ const messages = {
     </div>
   ),
 
-  // Add more messages here
+  // bRO...
 };
 
 export { integrations, messages };
