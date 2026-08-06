@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import PixelMascot from "@/components/Portfolio/PixelMascot";
+import SectionHeading from "@/components/Portfolio/SectionHeading";
 
 const initialData = { name: "", email: "", message: "" };
 
@@ -42,59 +44,59 @@ const Contact = () => {
   };
 
   return (
-    <section id="pf-contact" className="pf-section pf-container">
-      <div className="pf-section-head">
-        <h2 className="pf-section-title">Let&apos;s Connect</h2>
-        <span className="pf-tag">07 // Comms</span>
-      </div>
+    <div className="pf-section-wrap">
+      <section id="pf-contact" className="pf-section pf-container">
+        <SectionHeading tag="07 // Comms" title="Let's Connect" />
 
-      <form onSubmit={handleSubmit} className="pf-contact-box">
-        <p className="pf-form-note" style={{ marginBottom: "1rem" }}>
-          Just your name, email, and what&apos;s on your mind.
-        </p>
+        <form onSubmit={handleSubmit} className="pf-contact-box">
+          <p className="pf-form-note" style={{ marginBottom: "1rem" }}>
+            Just your name, email, and what&apos;s on your mind.
+          </p>
 
-        <div className="pf-field">
-          <label htmlFor="name">Name</label>
-          <input
-            onChange={handleChange}
-            value={data.name}
-            name="name"
-            id="name"
-            type="text"
-            required
-          />
-        </div>
+          <div className="pf-field">
+            <label htmlFor="name">Name</label>
+            <input
+              onChange={handleChange}
+              value={data.name}
+              name="name"
+              id="name"
+              type="text"
+              required
+            />
+          </div>
 
-        <div className="pf-field">
-          <label htmlFor="email">Email</label>
-          <input
-            onChange={handleChange}
-            value={data.email}
-            name="email"
-            id="email"
-            type="email"
-            required
-          />
-        </div>
+          <div className="pf-field">
+            <label htmlFor="email">Email</label>
+            <input
+              onChange={handleChange}
+              value={data.email}
+              name="email"
+              id="email"
+              type="email"
+              required
+            />
+          </div>
 
-        <div className="pf-field">
-          <label htmlFor="message">Message</label>
-          <textarea
-            onChange={handleChange}
-            value={data.message}
-            name="message"
-            id="message"
-            rows={5}
-            required
-          />
-        </div>
+          <div className="pf-field">
+            <label htmlFor="message">Message</label>
+            <textarea
+              onChange={handleChange}
+              value={data.message}
+              name="message"
+              id="message"
+              rows={5}
+              required
+            />
+          </div>
 
-        <button type="submit" disabled={loading} className="pf-btn pf-btn-solid" style={{ width: "100%", justifyContent: "center" }}>
-          {loading ? "Sending..." : "Send Message"}
-        </button>
-        <p className="pf-form-note">Message goes straight to my inbox via a secure server-side integration — no key ever touches the browser.</p>
-      </form>
-    </section>
+          <button type="submit" disabled={loading} className="pf-btn pf-btn-solid" style={{ width: "100%", justifyContent: "center" }}>
+            {loading ? "Sending..." : "Send Message"}
+          </button>
+          <p className="pf-form-note">Message goes straight to my inbox via a secure server-side integration — no key ever touches the browser.</p>
+        </form>
+      </section>
+      <PixelMascot pose="contact" side="right" />
+    </div>
   );
 };
 
