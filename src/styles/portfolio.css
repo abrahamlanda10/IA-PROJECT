@@ -22,6 +22,9 @@
   from { background-position: 0 0; }
   to { background-position: 0 120px; }
 }
+@keyframes pf-type-reveal { from { width: 0; } }
+@keyframes pf-caret-blink { 0%, 100% { border-color: var(--accent); } 50% { border-color: transparent; } }
+@keyframes pf-caret-hide { to { border-color: transparent; } }
 
 /* ---- Palette engine: five token sets, one shared structure ---- */
 #pf-root {
@@ -66,6 +69,13 @@
   color: var(--accent); display: inline-flex; align-items: center; gap: .5em;
 }
 .pf-eyebrow::before { content: ""; width: 1.4em; height: 2px; background: var(--accent); display: inline-block; }
+
+.pf-type {
+  display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom;
+  width: 0; border-right: 2px solid transparent;
+  animation-play-state: paused;
+}
+.pf-in-view .pf-type { animation-play-state: running; }
 
 .pf-pixel-corners, .pf-card, .pf-proj-card, .pf-contact-box {
   clip-path: polygon(0 10px, 10px 10px, 10px 0, calc(100% - 10px) 0, calc(100% - 10px) 10px, 100% 10px,
