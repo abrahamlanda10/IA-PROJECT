@@ -19,7 +19,7 @@ function typingStyle(text: string, delayS: number): CSSProperties {
     animationTimingFunction: `steps(${text.length}), step-end, linear`,
     animationDelay: `${delayS}s, ${delayS}s, ${caretHideDelayS}s`,
     animationIterationCount: `1, ${BLINK_COUNT}, 1`,
-    animationFillMode: "forwards, forwards, forwards",
+    animationFillMode: "both, forwards, forwards",
   } as CSSProperties;
 }
 

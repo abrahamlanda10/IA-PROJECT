@@ -77,6 +77,15 @@
 }
 .pf-in-view .pf-type { animation-play-state: running; }
 
+@media (max-width: 700px) {
+  .pf-section-title .pf-type {
+    width: auto !important;
+    white-space: normal;
+    border-right: 0;
+    animation: none;
+  }
+}
+
 .pf-pixel-corners, .pf-card, .pf-proj-card, .pf-contact-box {
   clip-path: polygon(0 10px, 10px 10px, 10px 0, calc(100% - 10px) 0, calc(100% - 10px) 10px, 100% 10px,
     100% calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%,
