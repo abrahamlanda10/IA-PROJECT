@@ -162,18 +162,22 @@
 }
 #pf-contact::after { opacity: 0; }
 
-/* ---- Cursor glow: a soft accent halo that lightens the grid it passes over ---- */
-.pf-cursor-glow {
-  position: fixed; top: 0; left: 0; width: 280px; height: 280px; margin: -140px 0 0 -140px;
-  border-radius: 50%; pointer-events: none; z-index: 6; mix-blend-mode: screen; opacity: 0;
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 68%);
-  filter: blur(4px); transition: transform .07s linear, opacity .3s ease;
+/* ---- Pixel cursor: a palette-shadowed block that replaces the OS arrow ---- */
+#pf-root[data-cursor-fx="on"],
+#pf-root[data-cursor-fx="on"] * { cursor: none; }
+
+.pf-pixel-cursor {
+  position: fixed; top: 0; left: 0; width: 0; height: 0; pointer-events: none; z-index: 999;
+  opacity: 0; transition: transform .07s linear, opacity .3s ease;
 }
-.pf-pixel-dot {
-  position: fixed; width: 5px; height: 5px; background: var(--accent); pointer-events: none; z-index: 999;
-  box-shadow: 0 0 6px 1px var(--accent), 0 0 14px 3px color-mix(in srgb, var(--accent) 60%, transparent);
-  transition: transform .6s ease-out, opacity .6s ease-out; opacity: .9;
+.pf-pixel-cursor-shadow, .pf-pixel-cursor-core {
+  position: absolute; top: 0; left: 0; width: 10px; height: 10px;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1);
 }
+.pf-pixel-cursor-shadow { background: var(--line); transform: translate(4px, 4px); }
+.pf-pixel-cursor-core { background: var(--accent); }
+.pf-pixel-cursor--active .pf-pixel-cursor-core { transform: scale(1.5); }
+.pf-pixel-cursor--active .pf-pixel-cursor-shadow { transform: translate(7px, 7px); }
 
 /* ---- HUD header ---- */
 .pf-hud {

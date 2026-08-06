@@ -4,26 +4,30 @@ import { useEffect, useRef } from "react";
 
 /**
  * Mounted once at the root of the portfolio. Handles the decorative,
- * non-essential interactions: a cursor-following glow that lightens the
- * arcade grids it passes over, a trailing spark of glowing pixels, a slow
- * ambient hue cycle, a subtle 3D tilt on `.pf-tilt` elements, and the
- * section-grid parallax push. All of it is skipped under reduced-motion.
+ * non-essential interactions: a custom pixel cursor with a palette-colored
+ * offset shadow (replacing the OS arrow), an ambient hue cycle, a subtle 3D
+ * tilt on `.pf-tilt` elements, and the section-grid parallax push. All of it
+ * is skipped under reduced-motion or on touch/coarse pointers.
  */
+const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, select, .pf-swatch, .pf-tilt';
+
 const CursorFX = () => {
-  const glowRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = document.getElementById("pf-root");
     if (!root) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
+    const pointerFine = window.matchMedia("(pointer: fine)").matches;
+    if (reduceMotion || !pointerFine) return;
 
-    const glow = glowRef.current;
+    root.dataset.cursorFx = "on";
+
+    const cursor = cursorRef.current;
     let rafPending = false;
     let lastX = 0;
     let lastY = 0;
-    let lastDot = 0;
 
     const onMouseMove = (e: MouseEvent) => {
       lastX = e.clientX;
@@ -32,9 +36,9 @@ const CursorFX = () => {
       if (!rafPending) {
         rafPending = true;
         requestAnimationFrame(() => {
-          if (glow) {
-            glow.style.transform = `translate(${lastX}px,${lastY}px)`;
-            glow.style.opacity = ".85";
+          if (cursor) {
+            cursor.style.transform = `translate(${lastX}px,${lastY}px)`;
+            cursor.style.opacity = "1";
           }
           const mx = (lastX / window.innerWidth - 0.5) * 2;
           const my = (lastY / window.innerHeight - 0.5) * 2;
@@ -43,28 +47,29 @@ const CursorFX = () => {
           rafPending = false;
         });
       }
-
-      const now = Date.now();
-      if (now - lastDot < 45) return;
-      lastDot = now;
-      const dot = document.createElement("div");
-      dot.className = "pf-pixel-dot";
-      dot.style.left = `${lastX - 2}px`;
-      dot.style.top = `${lastY - 2}px`;
-      root.appendChild(dot);
-      requestAnimationFrame(() => {
-        dot.style.transform = `translate(${Math.random() * 16 - 8}px,${Math.random() * 14 + 8}px) scale(0)`;
-        dot.style.opacity = "0";
-      });
-      setTimeout(() => dot.remove(), 650);
     };
 
     const onMouseLeave = () => {
-      if (glow) glow.style.opacity = "0";
+      if (cursor) cursor.style.opacity = "0";
+    };
+
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (cursor && target.closest?.(INTERACTIVE_SELECTOR)) {
+        cursor.classList.add("pf-pixel-cursor--active");
+      }
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (cursor && target.closest?.(INTERACTIVE_SELECTOR)) {
+        cursor.classList.remove("pf-pixel-cursor--active");
+      }
     };
 
     document.addEventListener("mousemove", onMouseMove, { passive: true });
     document.addEventListener("mouseleave", onMouseLeave);
+    root.addEventListener("mouseover", onMouseOver);
+    root.addEventListener("mouseout", onMouseOut);
 
     // Ambient color cycle: every 5s, ease the accent-tinted hero glow to a new hue.
     let hue = 0;
@@ -89,8 +94,11 @@ const CursorFX = () => {
     });
 
     return () => {
+      delete root.dataset.cursorFx;
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);
+      root.removeEventListener("mouseover", onMouseOver);
+      root.removeEventListener("mouseout", onMouseOut);
       window.clearInterval(hueInterval);
       tiltHandlers.forEach(({ el, move, leave }) => {
         el.removeEventListener("mousemove", move);
@@ -99,7 +107,12 @@ const CursorFX = () => {
     };
   }, []);
 
-  return <div className="pf-cursor-glow" ref={glowRef} aria-hidden="true" />;
+  return (
+    <div className="pf-pixel-cursor" ref={cursorRef} aria-hidden="true">
+      <span className="pf-pixel-cursor-shadow" />
+      <span className="pf-pixel-cursor-core" />
+    </div>
+  );
 };
 
 export default CursorFX;
