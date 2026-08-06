@@ -22,6 +22,9 @@
   from { background-position: 0 0; }
   to { background-position: 0 120px; }
 }
+@keyframes pf-type-reveal { from { width: 0; } }
+@keyframes pf-caret-blink { 0%, 100% { border-color: var(--accent); } 50% { border-color: transparent; } }
+@keyframes pf-caret-hide { to { border-color: transparent; } }
 
 /* ---- Palette engine: five token sets, one shared structure ---- */
 #pf-root {
@@ -66,6 +69,22 @@
   color: var(--accent); display: inline-flex; align-items: center; gap: .5em;
 }
 .pf-eyebrow::before { content: ""; width: 1.4em; height: 2px; background: var(--accent); display: inline-block; }
+
+.pf-type {
+  display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom;
+  width: 0; border-right: 2px solid transparent;
+  animation-play-state: paused;
+}
+.pf-in-view .pf-type { animation-play-state: running; }
+
+@media (max-width: 700px) {
+  .pf-section-title .pf-type {
+    width: auto !important;
+    white-space: normal;
+    border-right: 0;
+    animation: none;
+  }
+}
 
 .pf-pixel-corners, .pf-card, .pf-proj-card, .pf-contact-box {
   clip-path: polygon(0 10px, 10px 10px, 10px 0, calc(100% - 10px) 0, calc(100% - 10px) 10px, 100% 10px,
@@ -162,18 +181,39 @@
 }
 #pf-contact::after { opacity: 0; }
 
-/* ---- Cursor glow: a soft accent halo that lightens the grid it passes over ---- */
-.pf-cursor-glow {
-  position: fixed; top: 0; left: 0; width: 280px; height: 280px; margin: -140px 0 0 -140px;
-  border-radius: 50%; pointer-events: none; z-index: 6; mix-blend-mode: screen; opacity: 0;
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 68%);
-  filter: blur(4px); transition: transform .07s linear, opacity .3s ease;
+/* ---- Pixel-art section mascot ---- */
+.pf-section-wrap { position: relative; }
+.pf-mascot {
+  display: none; position: absolute; top: clamp(2.5rem, 7vw, 5rem);
+  width: 100px; height: 132px; opacity: 0; z-index: 2; pointer-events: none;
 }
-.pf-pixel-dot {
-  position: fixed; width: 5px; height: 5px; background: var(--accent); pointer-events: none; z-index: 999;
-  box-shadow: 0 0 6px 1px var(--accent), 0 0 14px 3px color-mix(in srgb, var(--accent) 60%, transparent);
-  transition: transform .6s ease-out, opacity .6s ease-out; opacity: .9;
+.pf-mascot--right { left: calc(50% + 560px + 12px); }
+.pf-mascot--left { right: calc(50% + 560px + 12px); }
+.pf-mascot-figure { position: relative; width: 100px; height: 132px; }
+.pf-mascot.pf-in-view {
+  opacity: 1;
+  animation: pf-reveal-up .9s cubic-bezier(.16,1,.3,1) both;
 }
+@media (min-width: 1440px) {
+  .pf-mascot { display: block; }
+}
+
+/* ---- Pixel cursor: a palette-shadowed block that replaces the OS arrow ---- */
+#pf-root[data-cursor-fx="on"],
+#pf-root[data-cursor-fx="on"] * { cursor: none; }
+
+.pf-pixel-cursor {
+  position: fixed; top: 0; left: 0; width: 0; height: 0; pointer-events: none; z-index: 999;
+  opacity: 0; transition: transform .07s linear, opacity .3s ease;
+}
+.pf-pixel-cursor-shadow, .pf-pixel-cursor-core {
+  position: absolute; top: 0; left: 0; width: 10px; height: 10px;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1);
+}
+.pf-pixel-cursor-shadow { background: var(--line); transform: translate(4px, 4px); }
+.pf-pixel-cursor-core { background: var(--accent); }
+.pf-pixel-cursor--active .pf-pixel-cursor-core { transform: scale(1.5); }
+.pf-pixel-cursor--active .pf-pixel-cursor-shadow { transform: translate(7px, 7px); }
 
 /* ---- HUD header ---- */
 .pf-hud {

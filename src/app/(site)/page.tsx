@@ -9,6 +9,7 @@ import Hud from "@/components/Portfolio/Hud";
 import { PaletteProvider } from "@/components/Portfolio/PaletteContext";
 import PortfolioFooter from "@/components/Portfolio/PortfolioFooter";
 import Projects from "@/components/Portfolio/Projects";
+import ScrollReveal from "@/components/Portfolio/ScrollReveal";
 import Skills from "@/components/Portfolio/Skills";
 import "@/styles/portfolio.css";
 import { Metadata } from "next";
@@ -23,6 +24,7 @@ export default function Home() {
     <PaletteProvider>
       <Hud />
       <CursorFX />
+      <ScrollReveal />
       <Hero />
       <About />
       <Skills />
