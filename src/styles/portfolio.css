@@ -431,3 +431,15 @@ html:has(#pf-root) {
   #pf-root * { transition: none !important; animation: none !important; }
   html:has(#pf-root) { scroll-behavior: auto; }
 }
+
+@media print {
+  #pf-root { background: #fff; color: #111; }
+  #pf-root * { text-shadow: none !important; filter: none !important; box-shadow: none !important; animation: none !important; }
+  .pf-hud, .pf-footer, .pf-pixel-cursor, .pf-hud-toggle { display: none !important; }
+  .pf-section::before, .pf-section::after { display: none !important; }
+  .pf-section { border-top-color: #ccc; padding-block: 1rem; }
+  .pf-card, .pf-proj-card, .pf-contact-box, .pf-chip, .pf-stat { background: #fff; border: 1px solid #ccc; }
+  .pf-resume-head h1, #pf-root h2, #pf-root h3 { color: #111; }
+  #pf-root p, .pf-tag, .pf-t-date { color: #333; }
+  .pf-resume-actions { display: none; }
+}
