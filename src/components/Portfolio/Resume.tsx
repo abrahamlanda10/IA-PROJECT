@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { badges, contactEmail, education, skillGroups, stats, summary, timeline } from "@/data/portfolioData";
+import { badges, contactEmail, education, projects, skillGroups, stats, summary, timeline } from "@/data/portfolioData";
 
 const Resume = () => (
   <>
@@ -101,6 +101,26 @@ const Resume = () => (
             <span className="pf-tag">{badge.issuer}</span>
             <h3>{badge.title}</h3>
           </div>
+        ))}
+      </div>
+    </section>
+
+    <section className="pf-section pf-container">
+      <div className="pf-section-head">
+        <h2 className="pf-section-title">Projects</h2>
+        <span className="pf-tag">06 // github.com/abrahamlanda10</span>
+      </div>
+      <div className="pf-card-grid">
+        {projects.map((project) => (
+          <article className="pf-proj-card" key={project.title}>
+            <span className="pf-tag">{project.tag}</span>
+            <h3>{project.title}</h3>
+            <p>{project.body}</p>
+            <div className="pf-stack">{project.stack}</div>
+            <a href={project.href} target="_blank" rel="noopener">
+              View repo →
+            </a>
+          </article>
         ))}
       </div>
     </section>
