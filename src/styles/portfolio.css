@@ -280,10 +280,11 @@ html:has(#pf-root) {
   .pf-hud-toggle { display: flex; }
   .pf-hud-nav {
     order: 3; flex-basis: 100%; flex-direction: column; align-items: flex-start; gap: 0;
-    max-height: 0; overflow: hidden; opacity: 0; transition: max-height .25s ease, opacity .2s ease;
+    max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+    transition: max-height .25s ease, opacity .2s ease, visibility .25s ease;
   }
   .pf-hud-nav[data-open="true"] {
-    max-height: 26rem; opacity: 1; margin-top: .25rem; padding-top: .5rem; border-top: 1px solid var(--line);
+    max-height: 26rem; opacity: 1; visibility: visible; margin-top: .25rem; padding-top: .5rem; border-top: 1px solid var(--line);
   }
   .pf-hud-nav-link {
     width: 100%; padding: .7rem 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
@@ -433,13 +434,21 @@ html:has(#pf-root) {
 }
 
 @media print {
-  #pf-root { background: #fff; color: #111; }
+  /* [data-palette] here isn't a typo: the palette rules above (e.g.
+     `#pf-root[data-palette="night"]`) carry an extra attribute-selector
+     specificity over a plain `#pf-root`, and #pf-root always has a
+     data-palette attribute (default "olive") — so a bare `#pf-root`
+     override here would silently lose the cascade to whichever palette
+     is active and never actually take effect. */
+  #pf-root[data-palette] {
+    --bg: #fff; --bg-alt: #fff; --ink: #111; --ink-dim: #444;
+    --accent: #111; --accent-2: #666; --line: #ccc; --accent-ink: #fff;
+    background: #fff; color: #111;
+  }
   #pf-root * { text-shadow: none !important; filter: none !important; box-shadow: none !important; animation: none !important; }
   .pf-hud, .pf-footer, .pf-pixel-cursor, .pf-hud-toggle { display: none !important; }
   .pf-section::before, .pf-section::after { display: none !important; }
   .pf-section { border-top-color: #ccc; padding-block: 1rem; }
   .pf-card, .pf-proj-card, .pf-contact-box, .pf-chip, .pf-stat { background: #fff; border: 1px solid #ccc; }
-  .pf-resume-head h1, #pf-root h2, #pf-root h3 { color: #111; }
-  #pf-root p, .pf-tag, .pf-t-date { color: #333; }
   .pf-resume-actions { display: none; }
 }

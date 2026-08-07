@@ -1,9 +1,13 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { portfolioRoutes } from '@/data/portfolioData';
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+
+  const pathUrl = usePathname();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -25,6 +29,11 @@ export default function ScrollToTop() {
 
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
+
+  // Portfolio pages (homepage, résumé) are self-contained and use their own
+  // design system; the generic scroll-to-top button doesn't match and would
+  // sit outside #pf-root's print stylesheet scope.
+  if (portfolioRoutes.includes(pathUrl)) return null;
 
   return (
     <button
