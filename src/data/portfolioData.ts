@@ -100,3 +100,16 @@ export const projects = [
     href: "https://github.com/abrahamlanda10/The-Beans-Place",
   },
 ];
+
+// Shared with both the homepage's About section and the /resume page, so
+// the two can't drift out of sync.
+export const summary =
+  "3+ years of preventive maintenance, diagnostics, and repair on military wheeled vehicles and equipment — sustaining mission readiness while supporting NATO operations in Poland. Now transitioning to full-stack development: certified in HTML/CSS and JavaScript (ES6+), building projects on GitHub, and bringing the same root-cause-analysis discipline to debugging code as to diagnosing engines. Bilingual, adaptable, and used to working under pressure in high-tempo environments.";
+
+// Already the recipient address for the contact form (src/app/api/contact/route.ts) —
+// surfaced here too since a résumé needs a visible "how do I reach you" line.
+export const contactEmail = "abrahamlanda10@gmail.com";
+
+// Routes that are self-contained portfolio pages (own Hud/PortfolioFooter,
+// no generic site Header/Footer). Header and Footer both check this list.
+export const portfolioRoutes = ["/", "/resume"];
