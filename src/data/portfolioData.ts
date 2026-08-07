@@ -39,6 +39,17 @@ export const stats = [
   { value: "EN / ES", label: "Bilingual" },
 ];
 
+// Section links for the sticky HUD navbar — hrefs match each section's `id`.
+export const navLinks = [
+  { href: "#pf-about", label: "About" },
+  { href: "#pf-skills", label: "Skills" },
+  { href: "#pf-experience", label: "Experience" },
+  { href: "#pf-education", label: "Education" },
+  { href: "#pf-badges", label: "Badges" },
+  { href: "#pf-projects", label: "Projects" },
+  { href: "#pf-contact", label: "Contact" },
+];
+
 export const timeline = [
   {
     date: "Sept 2023 — Present",

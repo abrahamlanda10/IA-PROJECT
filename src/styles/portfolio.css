@@ -49,12 +49,25 @@
   --accent: #2f5233; --accent-2: #a13d2b; --line: #cdc2a6; --accent-ink: #f3ede0;
 }
 
+/* Smooth-scroll the whole document when the portfolio is mounted, offset by
+   the sticky HUD's height so anchor jumps from the navbar land just below
+   it instead of tucking the section heading underneath it. */
+html:has(#pf-root) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 #pf-root {
   background: radial-gradient(ellipse 90% 50% at 50% -8%, color-mix(in srgb, var(--accent) 12%, var(--bg)), var(--bg) 60%);
   color: var(--ink);
   font-family: var(--pf-font-body);
   line-height: 1.55;
-  overflow-x: hidden;
+  /* `clip`, not `hidden`: `overflow-x: hidden` forces overflow-y to compute
+     as `auto`, which turns #pf-root into a scroll container that any
+     `position: sticky` descendant (the HUD navbar) sticks against instead
+     of the real viewport — silently breaking it. `clip` still hides the
+     decorative elements that bleed past the edges without that side effect. */
+  overflow-x: clip;
 }
 #pf-root * { box-sizing: border-box; }
 #pf-root h1, #pf-root h2, #pf-root h3 { font-family: var(--pf-font-mono); text-wrap: balance; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
@@ -215,10 +228,10 @@
 .pf-pixel-cursor--active .pf-pixel-cursor-core { transform: scale(1.5); }
 .pf-pixel-cursor--active .pf-pixel-cursor-shadow { transform: translate(7px, 7px); }
 
-/* ---- HUD header ---- */
+/* ---- HUD header / navbar ---- */
 .pf-hud {
   position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; padding: .9rem clamp(1.25rem, 4vw, 2.5rem); background: color-mix(in srgb, var(--bg) 78%, transparent);
+  flex-wrap: wrap; gap: .75rem 1rem; padding: .9rem clamp(1.25rem, 4vw, 2.5rem); background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid var(--line);
   box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--accent) 30%, transparent);
 }
@@ -226,6 +239,16 @@
 .pf-brand img { width: 30px; height: 30px; image-rendering: pixelated; border-radius: 3px; }
 .pf-brand strong { color: var(--ink); }
 .pf-brand span { color: var(--ink-dim); }
+
+.pf-hud-nav { display: flex; align-items: center; gap: 1.5rem; font-family: var(--pf-font-mono); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; }
+.pf-hud-nav-link { position: relative; padding: .3rem 0; color: var(--ink-dim); white-space: nowrap; transition: color .15s ease; }
+.pf-hud-nav-link:hover { color: var(--ink); }
+.pf-hud-nav-link[aria-current="true"] { color: var(--accent); }
+.pf-hud-nav-link[aria-current="true"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--accent);
+}
+
+.pf-hud-actions { display: flex; align-items: center; gap: 1rem; }
 .pf-palette-picker { display: flex; gap: .4rem; align-items: center; }
 .pf-swatch {
   width: 26px; height: 26px; border: 2px solid var(--line); background: var(--sw-bg);
@@ -236,8 +259,29 @@
 .pf-swatch::after { content: ""; width: 10px; height: 10px; background: var(--sw-accent); }
 .pf-swatch:hover { transform: translate(-1px, -1px); }
 .pf-swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent); }
-.pf-contact-quick { font-family: var(--pf-font-mono); font-size: .8rem; border: 1px solid var(--line); padding: .5rem .9rem; background: transparent; }
-.pf-contact-quick:hover { border-color: var(--accent); color: var(--accent); }
+
+.pf-hud-toggle {
+  display: none; flex-direction: column; justify-content: center; gap: 5px; width: 26px; height: 20px; flex-shrink: 0;
+}
+.pf-hud-toggle span { display: block; height: 2px; width: 100%; background: var(--ink); transition: transform .2s ease, opacity .2s ease; }
+.pf-hud-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.pf-hud-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.pf-hud-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 860px) {
+  .pf-hud-toggle { display: flex; }
+  .pf-hud-nav {
+    order: 3; flex-basis: 100%; flex-direction: column; align-items: flex-start; gap: 0;
+    max-height: 0; overflow: hidden; opacity: 0; transition: max-height .25s ease, opacity .2s ease;
+  }
+  .pf-hud-nav[data-open="true"] {
+    max-height: 26rem; opacity: 1; margin-top: .25rem; padding-top: .5rem; border-top: 1px solid var(--line);
+  }
+  .pf-hud-nav-link {
+    width: 100%; padding: .7rem 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  }
+  .pf-hud-nav-link[aria-current="true"]::after { display: none; }
+}
 
 /* ---- Hero ---- */
 #pf-hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; border-top: none; }
@@ -364,9 +408,9 @@
 @media (max-width: 760px) {
   .pf-about-grid { grid-template-columns: 1fr; }
   .pf-stat-strip { grid-template-columns: 1fr 1fr; }
-  .pf-hud { flex-wrap: wrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #pf-root * { transition: none !important; animation: none !important; }
+  html:has(#pf-root) { scroll-behavior: auto; }
 }
