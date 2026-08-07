@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { portfolioRoutes } from "@/data/portfolioData";
 import logo from "../../../public/images/logo/logo.svg";
 import DropDown from "./DropDown";
 import menuData from "./menuData";
@@ -29,8 +30,8 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
   });
 
-  // The homepage is a self-contained portfolio page with its own Hud header.
-  if (pathUrl === "/") return null;
+  // Portfolio pages (homepage, résumé) are self-contained with their own Hud header.
+  if (portfolioRoutes.includes(pathUrl)) return null;
 
   return (
     <>
