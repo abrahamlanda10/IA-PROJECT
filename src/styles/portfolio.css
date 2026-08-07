@@ -248,6 +248,14 @@ html:has(#pf-root) {
   content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--accent);
 }
 
+.pf-hud-nav-cta {
+  color: var(--accent-ink); background: var(--accent); padding: .45rem 1rem; border: 1px solid var(--accent);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.pf-hud-nav-cta:hover { background: var(--accent-2); border-color: var(--accent-2); color: var(--accent-ink); transform: translate(-1px, -1px); }
+.pf-hud-nav-cta[aria-current="true"] { color: var(--accent-ink); background: var(--accent-2); border-color: var(--accent-2); }
+.pf-hud-nav-cta[aria-current="true"]::after { content: none; }
+
 .pf-hud-actions { display: flex; align-items: center; gap: 1rem; }
 .pf-palette-picker { display: flex; gap: .4rem; align-items: center; }
 .pf-swatch {
@@ -281,6 +289,7 @@ html:has(#pf-root) {
     width: 100%; padding: .7rem 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
   }
   .pf-hud-nav-link[aria-current="true"]::after { display: none; }
+  .pf-hud-nav-cta { margin-top: .5rem; padding: .7rem 1rem; text-align: center; border-bottom: none; }
 }
 
 /* ---- Hero ---- */
